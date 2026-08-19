@@ -1,0 +1,50 @@
+experiment_name: cifar100_fltrust_resnet18_signflip_seed1
+seed: 1
+device: cuda
+dataset:
+  name: cifar100
+  root: data/raw
+  image_size: 32
+  normalize: true
+  augment: true
+partition:
+  type: dirichlet
+  num_clients: 20
+  dirichlet_alpha: 1.0
+  pathological_classes_per_client: 5
+federated:
+  rounds: 100
+  clients_per_round: 10
+  local_epochs: 1
+  batch_size: 64
+  lr: 0.003
+  momentum: 0.9
+  weight_decay: 0.0005
+model:
+  name: resnet18
+method:
+  name: fltrust
+attack:
+  name: sign_flip
+  malicious_fraction: 0.25
+anchor:
+  size: 4096
+  batch_size: 256
+  server_root_epochs: 1
+fedpareto:
+  objective_weights:
+    accuracy: 0.5
+    calibration: 0.2
+    fairness: 0.1
+    robustness: 0.2
+  temperature: 1.0
+  reliability_momentum: 0.9
+  trust_penalty: 0.1
+  fairness_strength: 0.15
+  entropy_reg: 0.25
+  pareto_bonus: 0.05
+evaluation:
+  batch_size: 256
+  ece_bins: 15
+output:
+  root_dir: runs

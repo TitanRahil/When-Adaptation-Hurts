@@ -1,0 +1,60 @@
+experiment_name: cifar10_fedavg_resnet18_seed1
+seed: 1
+device: cuda
+
+dataset:
+  name: cifar10
+  root: data/raw
+  image_size: 32
+  normalize: true
+  augment: true
+
+partition:
+  type: dirichlet
+  num_clients: 20
+  dirichlet_alpha: 1.0
+  pathological_classes_per_client: 2
+
+federated:
+  rounds: 60
+  clients_per_round: 8
+  local_epochs: 1
+  batch_size: 64
+  lr: 0.005
+  momentum: 0.9
+  weight_decay: 0.0005
+
+model:
+  name: resnet18
+
+method:
+  name: fedavg
+
+attack:
+  name: none
+  malicious_fraction: 0.0
+
+anchor:
+  size: 2048
+  batch_size: 128
+  server_root_epochs: 1
+
+fedpareto:
+  objective_weights:
+    accuracy: 0.45
+    calibration: 0.20
+    fairness: 0.15
+    robustness: 0.20
+  temperature: 1.0
+  reliability_momentum: 0.9
+  trust_penalty: 0.10
+  fairness_strength: 0.20
+  entropy_reg: 0.25
+  pareto_bonus: 0.05
+
+evaluation:
+  batch_size: 256
+  ece_bins: 15
+
+output:
+  root_dir: runs
